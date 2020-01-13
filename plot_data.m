@@ -25,17 +25,21 @@ switch option
         array = table2array(channelsel);
         Mag = array(:,6);
         Time = array(:,1);
-        M = zeros(100,length(array)/100);
-        t = zeros(100,length(array)/100);
-        for n = 1:length(array)/100
-            M(:,n) = Mag(100*n-99:100*n);
-            t(:,n) = Time(100*n-99:100*n);
+        Freq = array(:,3);
+        Divisor = numel(unique(Freq));
+        M = zeros(Divisor,length(array)/Divisor);
+        t = zeros(Divisor,length(array)/Divisor);
+        for n = 1:length(array)/Divisor
+            M(:,n) = Mag(Divisor*(n-1)+1:Divisor*n);
+            t(:,n) = Time(Divisor*(n-1)+1:Divisor*n);
         end
         plot(M,'color','b')
         xlabel('frequency (KHz)')
         ylabel('magnitude')
         title('Magnitude vs Frequency');
         legend(sprintf('channel %d',channel))
+    otherwise
+        
 end
 M = {M option t};
 end

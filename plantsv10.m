@@ -18,7 +18,6 @@ end
 % End initialization code - DO NOT EDIT
 end
 
-
 function plantsv10_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.start.Enable = 'off';
 handles.stop.Enable = 'off';
@@ -68,7 +67,6 @@ end
 function slider1_CreateFcn(hObject, eventdata, handles)
 hObject.Value = 1;
 hObject.SliderStep = [1/(hObject.Max-hObject.Min) 5/(hObject.Max-hObject.Min)];
-
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
@@ -97,11 +95,8 @@ handles.text.String = 'Save successfully';
 guidata(hObject, handles);
 end
 
-% t=@uploadfile_Callback;
-% t(hObject,eventdata,handles)
-
 %% Choose an existed file to plot in GUI
-function uploadfile_Callback(hObject, eventdata, handles)
+ function uploadfile_Callback(hObject, eventdata, handles)
 handles.start.Enable = 'off';
 handles.stop.Enable = 'off';
 handles.reset.Enable = 'off';
@@ -171,6 +166,7 @@ pause(1)
 handles.save.Enable = 'on';
 guidata(hObject,handles);
 end
+
 %%
 function reset_Callback(hObject, eventdata, handles)
 handles.datareg = [];
@@ -182,6 +178,7 @@ rs = @start_Callback;
 rs(handles.start, eventdata, handles);
 guidata(hObject,handles);
 end
+
 %%
 function connect_Callback(hObject, eventdata, handles)
 datareg = [];
@@ -227,6 +224,7 @@ elseif strcmp(option, 'T vs M')
 end
 guidata(hObject, handles);
 end
+
 %%
 function figure1_CloseRequestFcn(hObject, eventdata, handles)
 clear handles
