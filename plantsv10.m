@@ -117,10 +117,14 @@ if filename ~= 0
         time = M{3};
         handles.time = time;
         M = M{1};
+        [~,wid] = size(M);
+        if wid > 1
         set(handles.slider1,'Min',1,...
             'Max',length(M),'UserData',struct('M',M),...
             'Value',1,'SliderStep',[1/length(M) 10/length(M)]);
         handles.slider1.Visible = 'on';
+        else
+        end
         hObject.String = 'New file';
     end
 else
