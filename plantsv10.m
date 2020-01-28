@@ -242,5 +242,3 @@ function figure1_CloseRequestFcn(hObject, eventdata, handles)
 clear handles
 delete(hObject);
 end
-
-
