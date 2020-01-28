@@ -234,3 +234,11 @@ function figure1_CloseRequestFcn(hObject, eventdata, handles)
 clear handles
 delete(hObject);
 end
+
+
+% --- Executes on button press in plot.
+function plot_Callback(hObject, eventdata, handles)
+% hObject    handle to plot (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+end
