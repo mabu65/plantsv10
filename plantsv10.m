@@ -24,6 +24,7 @@ handles.stop.Enable = 'off';
 handles.reset.Enable = 'off';
 handles.slider1.Visible = 'off';
 handles.zoom.Visible = 'off';
+handles.plot.Enable = 'off';
 handles.text.String = ['Available Port:', serialportlist];
 %Load Settings
 t = 0; 
@@ -111,21 +112,8 @@ if filename ~= 0
     else
         handles.text.String = 'Upload successfully';
         T.Properties.VariableNames = {'t','channel','f', 'R', 'I', 'M', 'temp', 'hum'};
-        [M] = plot_data(T);
-        option = M{2};
-        handles.option = option;
-        time = M{3};
-        handles.time = time;
-        M = M{1};
-        [~,wid] = size(M);
-        if wid > 1
-        set(handles.slider1,'Min',1,...
-            'Max',length(M),'UserData',struct('M',M),...
-            'Value',1,'SliderStep',[1/length(M) 10/length(M)]);
-        handles.slider1.Visible = 'on';
-        else
-        end
-        hObject.String = 'New file';
+        hObject.UserData = T;
+        handles.plot.Enable = 'on';
     end
 else
     handles.text.String = 'Please choose a valid file';
@@ -229,6 +217,26 @@ end
 guidata(hObject, handles);
 end
 
+%% --- Executes on button press in plot.
+function plot_Callback(hObject, eventdata, handles)
+        T = handles.uploadfile.UserData;
+        [M] = plot_data(T);
+        option = M{2};
+        handles.option = option;
+        time = M{3};
+        handles.time = time;
+        M = M{1};
+        [~,wid] = size(M);
+        if wid > 1
+        set(handles.slider1,'Min',1,...
+            'Max',length(M),'UserData',struct('M',M),...
+            'Value',1,'SliderStep',[1/length(M) 10/length(M)]);
+        handles.slider1.Visible = 'on';
+        guidata(hObject,handles);
+        else
+            handles.text.String = 'No input';
+        end
+end
 %%
 function figure1_CloseRequestFcn(hObject, eventdata, handles)
 clear handles
@@ -236,9 +244,3 @@ delete(hObject);
 end
 
 
-% --- Executes on button press in plot.
-function plot_Callback(hObject, eventdata, handles)
-% hObject    handle to plot (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-end
