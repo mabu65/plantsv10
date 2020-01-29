@@ -6,7 +6,7 @@ datareg = handles.datareg;
 if t.NumBytesAvailable > 0
     getData = readline(t);
     getData = strsplit(getData,','); 
-    pdata = str2num(join(getData));
+    pdata = str2num(join(getData)); %delete extra comma and transform to num    
    if isempty(pdata) == 0
       time = pdata(1)/100;
       Mag = pdata(6);      

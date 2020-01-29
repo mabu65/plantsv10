@@ -20,5 +20,6 @@ if tf == 1
     s = ['<',commandCell(1),',',commandCell(2),',',commandCell(3),',',commandCell(4),',',...
         commandCell(5),',',commandCell(6),',',commandCell(7),',',commandCell(8),'>'];
     commandStr = string([s{:}]);
+    
 end
 end

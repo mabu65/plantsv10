@@ -1,5 +1,5 @@
-clear
-clc
+% clear
+% clc
 [filename,pathname] = uigetfile('*.txt');
 t = readtable([pathname filename]);
 

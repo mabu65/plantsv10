@@ -25,6 +25,7 @@ handles.reset.Enable = 'off';
 handles.slider1.Visible = 'off';
 handles.zoom.Visible = 'off';
 handles.plot.Enable = 'off';
+handles.uipanel2.Visible = 'off';
 handles.text.String = ['Available Port:', serialportlist];
 %Load Settings
 t = 0; 
@@ -53,14 +54,15 @@ val = round(hObject.Value);
 hObject.Value = val;
 if option == 'F vs M'
     plot(M(:,val),'color','b')
-    xlabel('Frequency (KHz)');
-    ylabel('Magnitude');
-    title(['Time: ',num2str(time(1,val)/(10e+07)),'s']);
+    handles.axes1.XLabel.String = 'Frequency (KHz)';
+    handles.axes1.YLabel.String = 'Magnitude';
+    handles.axes1.Title.String  = ['Time: ',num2str(time(1,val)/(10e+07)),'s'];
+    handles.axes1.XLim          = [handles.mini.Value handles.maxi.Value];
 elseif option == 'T vs M'
-    handles.axes1.XLim = [val val+100];
+    handles.axes1.XLim   = [val val+100];
+%     title(['Time: ',num2str(time(1,val)/(10e+07)),'s']);
 end
 handles.zoom.Visible = 'on';
-
 guidata(hObject, handles);
 end
 
@@ -109,6 +111,7 @@ if filename ~= 0
     T = readtable([pathname filename]);
     if width(T) ~= 8 % Avoid to input wrong format data
         handles.text.String = 'Incorrect format';
+        tabVis
     else
         handles.text.String = 'Upload successfully';
         T.Properties.VariableNames = {'t','channel','f', 'R', 'I', 'M', 'temp', 'hum'};
@@ -176,6 +179,7 @@ function connect_Callback(hObject, eventdata, handles)
 datareg = [];
 handles.datareg = datareg;
 handles = rmfield(handles,'t');
+handles.uipanel2.Visible = 'off';
 %Use Setting
 hObject.String = serialportlist;
 portlist = hObject.String;
@@ -196,9 +200,14 @@ else
     for i = 1:6
         handles.text.String = readline(t);
     end
-        handles.start.Enable = 'on';
-        handles.stop.Enable = 'on';
-        handles.reset.Enable = 'on';
+    handles.start.Enable = 'on';
+    handles.stop.Enable = 'on';
+    handles.reset.Enable = 'on';
+    preStr1 = split(commandStr,'<');
+    preStr2 = split(preStr1,'>');
+    preStr3 = split(preStr2,',');
+    preStr  = str2num(preStr3(1));
+    handles.preStr = preStr;
 end
 guidata(hObject, handles);
 end
@@ -212,33 +221,76 @@ if strcmp(option, 'F vs M')
     plot(M,'color','b')
     title('Magnitude vs Frequency');
 elseif strcmp(option, 'T vs M')
-    handles.axes1.XLim = [1 length(M)];
+    
 end
+handles.axes1.XLim = [-inf inf];
 guidata(hObject, handles);
 end
 
 %% --- Executes on button press in plot.
 function plot_Callback(hObject, eventdata, handles)
-        T = handles.uploadfile.UserData;
-        [M] = plot_data(T);
-        option = M{2};
-        handles.option = option;
-        time = M{3};
-        handles.time = time;
-        M = M{1};
-        [~,wid] = size(M);
-        if wid > 1
-        set(handles.slider1,'Min',1,...
-            'Max',length(M),'UserData',struct('M',M),...
-            'Value',1,'SliderStep',[1/length(M) 10/length(M)]);
-        handles.slider1.Visible = 'on';
-        guidata(hObject,handles);
-        else
-            handles.text.String = 'No input';
-        end
+T = handles.uploadfile.UserData;
+[M] = plot_data(T);
+option = M{2};
+handles.option = option;
+time = M{3};
+handles.time = time;
+M = M{1};
+[~,wid] = size(M);
+if wid > 1 | option == 'T vs M'
+set(handles.slider1,'Min',1,...
+    'Max',length(M),'UserData',struct('M',M),...
+    'Value',1,'SliderStep',[1/length(M) 10/length(M)]);
+handles.slider1.Visible = 'on';
+guidata(hObject,handles);
+else
+    handles.text.String = 'No data';
+end
+handles.uipanel2.Visible = 'on';
+handles.maxi.Value = inf;
+handles.maxi.String = '';
+handles.mini.Value = -inf;
+handles.mini.String = '';
 end
 %%
 function figure1_CloseRequestFcn(hObject, eventdata, handles)
 clear handles
 delete(hObject);
+end
+
+
+%%
+function maxi_Callback(hObject, eventdata, handles)
+if isempty(hObject.String) == 1
+    hObject.Value = inf ;
+else
+    hObject.Value = str2num(hObject.String);
+end
+    handles.axes1.XLim = [handles.mini.Value hObject.Value];    
+end
+
+% --- Executes during object creation, after setting all properties.
+function maxi_CreateFcn(hObject, eventdata, handles)
+
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+end
+
+%%
+function mini_Callback(hObject, eventdata, handles)
+if isempty(hObject.String) == 1
+    hObject.Value = -inf ;
+else
+    hObject.Value = str2num(hObject.String);
+end
+    handles.axes1.XLim = [hObject.Value handles.maxi.Value];    
+end
+
+% --- Executes during object creation, after setting all properties.
+function mini_CreateFcn(hObject, eventdata, handles)
+
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
 end

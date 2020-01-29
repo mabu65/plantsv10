@@ -12,8 +12,9 @@ switch option
                 magnitudes = freqsel(freqsel.channel == channel, :);
                 array = table2array(magnitudes);
                 M = array(:,6);
+                t = array(:,1);
                 plot(M,'color','b');
-                xlabel('time (hours)')
+                xlabel('time')
                 ylabel('magnitude')
                 title('Magnitude vs Time');
                 legend(sprintf('channel %d',channel))
@@ -25,7 +26,7 @@ switch option
     case 'F vs M' 
         keylist = inputdlg({'Channel'},'Enter');
         keylist = string(keylist);
-        if isempty(keylist) == 0;
+        if isempty(keylist) == 0
             channel = str2num(keylist);
             channelsel = T(T.channel == channel,:);
             array = table2array(channelsel);
